@@ -9,3 +9,26 @@ for (let row = 1; row <= 17; ++row) {
         }
     }
 }
+
+var snake = new drawSnake(65, 285, "green", 110, 30);
+var apple = new drawApple(420, 300, "red", 15, 0, 2 * Math.PI);
+
+function drawSnake(x, y, color, width, height) {
+  this.width = width;
+  this.height = height;
+  this.x = x;
+  this.y = y;
+  ctx.fillStyle = color;
+  ctx.fillRect(this.x, this.y, this.width, this.height);
+}
+
+function drawApple(x, y, color, radius, startingAngle, endingAngle) {
+  this.radius = radius;
+  this.startingAngle = startingAngle;
+  this.endingAngle = endingAngle;
+  this.x = x;
+  this.y = y;
+  ctx.fillStyle = color;
+  ctx.arc(this.x, this.y, this.radius, this.startingAngle, endingAngle);
+  ctx.fill();
+}
