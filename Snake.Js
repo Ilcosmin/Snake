@@ -20,7 +20,10 @@ var game = {
 		})
 	},
 	clear : function() {ctx.clearRect(snake.x, snake.y, snake.width, snake.height);
-  	}
+  	},
+  	stop : function() {
+        clearInterval(this.interval);
+    }
 }
 game.start();
 
@@ -49,17 +52,21 @@ function drawApple(x, y, color, radius, startingAngle, endingAngle) {
 }
 
 function updateGame() {
-  game.clear();
-  if (game.key == 37) {
-  	snake.x -= 1;
-  } else if (game.key == 39) {
-  	snake.x += 1;
-  } else if (game.key == 38) {
-  	snake.y -= 1;
-  } else if (game.key == 40) {
-  	snake.y += 1;
-  }
-  game.updateBoard();
-  snake.update();
-  apple.update(); 
+	if (snake.x === 0 || snake.x === c.width - 110 || snake.y === 0 || snake.y > c.height - 30) {
+		game.stop();
+	} else {
+		game.clear();
+		if (game.key == 37) {
+			snake.x -= 1;
+		} else if (game.key == 39) {
+			snake.x += 1;
+		} else if (game.key == 38) {
+			snake.y -= 1;
+		} else if (game.key == 40) {
+			snake.y += 1;
+		}
+	}
+	game.updateBoard();
+	snake.update();
+	apple.update(); 
 }
