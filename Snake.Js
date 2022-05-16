@@ -75,6 +75,11 @@ function updateGame() {
 	if (snake.x < 0 || snake.x + snake.width > c.width || snake.y < 0 || snake.y + snake.height > c.height) {
 		game.stop();
 	}
+	if (snake.x + 20 == apple.x + 20 && snake.y + 20 == apple.y + 20) {
+		increaseSnakeTail();
+		apple.x = Math.floor(Math.random() * 17) * 40;
+		apple.y = Math.floor(Math.random() * 15) * 40;
+	}
 	snake.speedX = 0;
 	snake.speedY = 0;
 	snakeDirection();
