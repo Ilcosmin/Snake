@@ -107,6 +107,9 @@ function updateGame() {
 		increaseSnake();
 	}
 	for (let i = 1; i < snake.length; ++ i) {
+		if (snakeHead.x == snake[i].x && snakeHead.y == snake[i].y && snakeHead.x + snakeHead.width == snake[i].x + snake[i].width && snakeHead.y + snakeHead.height == snake[i].y + snake[i].height) {
+			game.stop();
+		}
 		snake[i].newPos();
 		snake[i].update();
 		snakeDirection(i);
