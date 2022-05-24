@@ -3,6 +3,8 @@ var ctx = c.getContext("2d");
 var snakeHead = new drawComponent(40, 280, "green", 40, 40);
 var apple = new drawComponent(440, 280, "red", 40, 40);
 var snake = [snakeHead];
+var score = 0;
+var highScore = sessionStorage.getItem("highScore");
 
 var game = {
 	start : function() {
@@ -25,9 +27,11 @@ var game = {
   	},
   	stop : function() {
         clearInterval(this.interval);
+    },
+    restart : function() {
+    	location.reload();
     }
 }
-game.start();
 
 function drawComponent(x, y, color, width, height) {
 	this.width = width;
@@ -40,8 +44,19 @@ function drawComponent(x, y, color, width, height) {
 	this.y = y;
 
 	this.update = function() {
-	  ctx.fillStyle = color;
-	  ctx.fillRect(this.x, this.y, this.width, this.height);
+		ctx.fillStyle = color;
+		ctx.fillRect(this.x, this.y, this.width, this.height);
+
+		ctx.font="25px Comic Sans MS";
+		ctx.fillText("Score: " + score, 0, 25);
+		ctx.fillText("High Score: " + highScore, 150, 25);
+
+		if (highScore === null) {
+			sessionStorage.setItem("highScore", score);      
+		} else if (score > highScore) {
+			sessionStorage.setItem("highScore", score);
+		}
+		
 	}
 
 	this.newPos = function() {
@@ -105,6 +120,7 @@ function updateGame() {
 		apple.x = Math.floor(Math.random() * 17) * 40;
 		apple.y = Math.floor(Math.random() * 15) * 40;
 		increaseSnake();
+		++score;
 	}
 	for (let i = 1; i < snake.length; ++ i) {
 		if (snakeHead.x == snake[i].x && snakeHead.y == snake[i].y && snakeHead.x + snakeHead.width == snake[i].x + snake[i].width && snakeHead.y + snakeHead.height == snake[i].y + snake[i].height) {
@@ -113,6 +129,7 @@ function updateGame() {
 		snake[i].newPos();
 		snake[i].update();
 		snakeDirection(i);
+		
 	}
 	snakeHeadDirection();
 	if (snakeHead.x < 0 || snakeHead.x + snakeHead.width > c.width || snakeHead.y < 0 || snakeHead.y + snakeHead.height > c.height) {
