@@ -1,5 +1,13 @@
 var c = document.getElementById("myCanvas");
 var ctx = c.getContext("2d");
+ctx.font="20px Comic Sans MS";
+ctx.fillText("Snake - the rules of the game", 130, 50);
+ctx.fillText("The player uses the arrow keys to move a snake around the board.", 10, 115);
+ctx.fillText("As the snake finds food, it eats the food, and thereby grows larger.", 10, 155);
+ctx.fillText("The game ends when the snake either moves off the screen or moves", 10, 195);
+ctx.fillText("into itself.", 10, 235);
+ctx.fillText("The goal is to make the snake as large as possible before that happens.", 10, 275);
+ctx.fillText("Press the Start button to play the game!", 10, 345);
 var snakeHead = new drawComponent(40, 280, "green", 40, 40);
 var apple = new drawComponent(440, 280, "red", 40, 40);
 var snake = [snakeHead];
@@ -27,10 +35,13 @@ var game = {
   	},
   	stop : function() {
         clearInterval(this.interval);
-    },
-    restart : function() {
-    	location.reload();
-    }
+	ctx.fillStyle = "red";
+        ctx.font="80px Comic Sans MS";
+        ctx.fillText("GAME OVER",100, 200);
+	},
+	restart : function() {
+		location.reload();
+	}
 }
 
 function drawComponent(x, y, color, width, height) {
@@ -46,7 +57,6 @@ function drawComponent(x, y, color, width, height) {
 	this.update = function() {
 		ctx.fillStyle = color;
 		ctx.fillRect(this.x, this.y, this.width, this.height);
-
 		ctx.font="25px Comic Sans MS";
 		ctx.fillText("Score: " + score, 0, 25);
 		ctx.fillText("High Score: " + highScore, 150, 25);
@@ -55,8 +65,7 @@ function drawComponent(x, y, color, width, height) {
 			sessionStorage.setItem("highScore", score);      
 		} else if (score > highScore) {
 			sessionStorage.setItem("highScore", score);
-		}
-		
+		}	
 	}
 
 	this.newPos = function() {
