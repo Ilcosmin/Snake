@@ -1,3 +1,11 @@
 canvas {
-  background-color: #c0c0c0;
+	background-color: #c0c0c0;
+	position: sticky;
+	left: 600px;
+}
+
+button {
+	width: 120px;
+	height: 35px;
+	font-size: 20px
 }
