@@ -1,19 +1,11 @@
-var c = document.getElementById("myCanvas");
-var ctx = c.getContext("2d");
-ctx.font="20px Comic Sans MS";
-ctx.fillText("Snake - the rules of the game", 130, 50);
-ctx.fillText("The player uses the arrow keys to move a snake around the board.", 10, 115);
-ctx.fillText("As the snake finds food, it eats the food, and thereby grows larger.", 10, 155);
-ctx.fillText("The game ends when the snake either moves off the screen or moves", 10, 195);
-ctx.fillText("into itself.", 10, 235);
-ctx.fillText("The goal is to make the snake as large as possible before that happens.", 10, 275);
-ctx.fillText("Press the Start button to play the game!", 10, 345);
-var snakeHead = new drawComponent(40, 280, "green", 40, 40);
-var apple = new drawComponent(440, 280, "red", 40, 40);
+const c = document.getElementById("myCanvas");
+const ctx = c.getContext("2d");
+gameRulles();
+var snakeHead = new drawComponent(40, 280, "#196F3D", 40, 40);
+var apple = new drawComponent(440, 280, "#C0392B", 40, 40);
 var snake = [snakeHead];
 var score = 0;
 var highScore = sessionStorage.getItem("highScore");
-
 var game = {
 	start : function() {
 		this.updateBoard = function() {
@@ -35,13 +27,30 @@ var game = {
   	},
   	stop : function() {
         clearInterval(this.interval);
-	ctx.fillStyle = "red";
-        ctx.font="80px Comic Sans MS";
-        ctx.fillText("GAME OVER",100, 200);
-	},
-	restart : function() {
-		location.reload();
+        ctx.fillStyle = "#C0392B";
+        ctx.font="100px Comic Sans MS";
+        ctx.fillText("GAME OVER",50, 200);
+    },
+    restart : function() {
+    	location.reload();
+    }
+}
+
+function gameRulles() {
+	this.x = 10;
+	this.y = 120;
+	this.lineHeight = 25;
+	this.txt = "Snake - the rules of the game:\n\nThe player uses the arrow keys to move a snake around the board.\nAs the snake finds food, it eats the food, and thereby grows larger.\nThe game ends when the snake either moves off the screen or moves;\ninto itself.\nThe goal is to make the snake as large as possible before that happens.\n\n\nPress the Start button to play the game!";
+	this.lines = txt.split('\n');
+	ctx.font = "20px Comic Sans MS";
+	for (let i = 0; i < lines.length; ++i) {
+	    ctx.fillText(lines[i], x, y + (i * lineHeight));
 	}
+	this.img = new Image();
+	img.addEventListener('load', function() {
+		ctx.drawImage(img, 200, 400, 250, 180);
+	}, false);
+	img.src = "myImg.png";
 }
 
 function drawComponent(x, y, color, width, height) {
@@ -53,21 +62,19 @@ function drawComponent(x, y, color, width, height) {
   	this.peviousSpeedY = 0;
 	this.x = x;
 	this.y = y;
-
 	this.update = function() {
 		ctx.fillStyle = color;
 		ctx.fillRect(this.x, this.y, this.width, this.height);
+		ctx.fillStyle = "#196F3D";
 		ctx.font="25px Comic Sans MS";
 		ctx.fillText("Score: " + score, 0, 25);
 		ctx.fillText("High Score: " + highScore, 150, 25);
-
 		if (highScore === null) {
 			sessionStorage.setItem("highScore", score);      
 		} else if (score > highScore) {
 			sessionStorage.setItem("highScore", score);
-		}	
+		}
 	}
-
 	this.newPos = function() {
 	    this.x += this.speedX;
 	    this.y += this.speedY;
@@ -106,13 +113,13 @@ function snakeDirection(i) {
 function increaseSnake() {
 	let length = snake.length;
 	if (snake[length - 1].speedX > 0) {
-		snake.push(new drawComponent(snake[length - 1].x - 40, snake[length - 1].y, "green", 40, 40));
+		snake.push(new drawComponent(snake[length - 1].x - 40, snake[length - 1].y, "#28B463", 40, 40));
 	} else if (snake[length - 1].speedX < 0) {
-		snake.push(new drawComponent(snake[length - 1].x + 40, snake[length - 1].y, "green", 40, 40));
+		snake.push(new drawComponent(snake[length - 1].x + 40, snake[length - 1].y, "#28B463", 40, 40));
 	} else if (snake[length - 1].speedY > 0) {
-		snake.push(new drawComponent(snake[length - 1].x, snake[length - 1].y - 40, "green", 40, 40));
+		snake.push(new drawComponent(snake[length - 1].x, snake[length - 1].y - 40, "#28B463", 40, 40));
 	} else if (snake[length - 1].speedY < 0) {
-		snake.push(new drawComponent(snake[length - 1].x, snake[length - 1].y + 40, "green", 40, 40));
+		snake.push(new drawComponent(snake[length - 1].x, snake[length - 1].y + 40, "#28B463", 40, 40));
 	}
 	snake[length].speedX = snake[length - 1].speedX;
 	snake[length].speedY = snake[length - 1].speedY;
@@ -124,12 +131,14 @@ function updateGame() {
 	apple.update();
 	snakeHead.newPos();
 	snakeHead.update();
-	
 	if (snakeHead.x + 20 == apple.x + 20 && snakeHead.y + 20 == apple.y + 20) {	
 		apple.x = Math.floor(Math.random() * 17) * 40;
 		apple.y = Math.floor(Math.random() * 15) * 40;
 		increaseSnake();
 		++score;
+	}
+	if (snakeHead.x < 0 || snakeHead.x + snakeHead.width > c.width || snakeHead.y < 0 || snakeHead.y + snakeHead.height > c.height) {
+		game.stop();
 	}
 	for (let i = 1; i < snake.length; ++ i) {
 		if (snakeHead.x == snake[i].x && snakeHead.y == snake[i].y && snakeHead.x + snakeHead.width == snake[i].x + snake[i].width && snakeHead.y + snakeHead.height == snake[i].y + snake[i].height) {
@@ -138,10 +147,6 @@ function updateGame() {
 		snake[i].newPos();
 		snake[i].update();
 		snakeDirection(i);
-		
 	}
 	snakeHeadDirection();
-	if (snakeHead.x < 0 || snakeHead.x + snakeHead.width > c.width || snakeHead.y < 0 || snakeHead.y + snakeHead.height > c.height) {
-		game.stop();
-	}
 }
